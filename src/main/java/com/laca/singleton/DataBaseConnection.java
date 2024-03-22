@@ -1,4 +1,4 @@
-package com.laca.prueba;
+package com.laca.singleton;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

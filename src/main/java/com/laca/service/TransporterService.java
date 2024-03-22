@@ -1,7 +1,7 @@
 package com.laca.service;
 
 import com.laca.entity.Transporter;
-import com.laca.prueba.DataBaseConnection;
+import com.laca.singleton.DataBaseConnection;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
