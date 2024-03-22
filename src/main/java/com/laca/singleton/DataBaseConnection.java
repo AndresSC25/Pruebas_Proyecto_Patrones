@@ -27,7 +27,7 @@ public class DataBaseConnection {
         return connection;
     }
     //TODO: Con esto creamos la instancia de la clase que sea unica.
-    public static DataBaseConnection getInstance() throws SQLException {
+    public static synchronized DataBaseConnection getInstance() throws SQLException {
         if (instance == null) {
             instance = new DataBaseConnection();
         } else if (instance.getConnection().isClosed()) {
