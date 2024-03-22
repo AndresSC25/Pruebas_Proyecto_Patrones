@@ -11,12 +11,9 @@ import java.util.List;
 
 @Service
 public class TransporterService {
-    DataBaseConnection dataBaseConnection = DataBaseConnection.getInstance();
-
     public TransporterService() throws SQLException {
 
     }
-
     @Transactional
     public List<Transporter> getAllTransporters() {
         List<Transporter> transporters = new ArrayList<>();
