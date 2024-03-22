@@ -16,18 +16,18 @@ public class DataBaseConnection {
             Class.forName("org.mariadb.jdbc.Driver");
             String password = "159457896321";
             String username = "root";
-            String url = "jdbc:mariadb://localhost:3306/prueba";
+            String url = "jdbc:mariadb://localhost:3306/proyecto_patrones";
             this.connection = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException ex) {
             System.out.println("Ups... Hay algo mal con el String de la conexión: " + ex.getMessage());
         }
     }
     //TODO: con este metodo podemos obtener la direccion que se hace para tener la conexión.
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
         return connection;
     }
     //TODO: Con esto creamos la instancia de la clase que sea unica.
-    public static synchronized DataBaseConnection getInstance() throws SQLException {
+    public static DataBaseConnection getInstance() throws SQLException {
         if (instance == null) {
             instance = new DataBaseConnection();
         } else if (instance.getConnection().isClosed()) {

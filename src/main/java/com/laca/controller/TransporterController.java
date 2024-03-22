@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class TransporterController {
     }
 
     @GetMapping
-    public List<Transporter> getAllTransporters() {
+    public List<Transporter> getAllTransporters(){
         List<Transporter> transporters = transporterService.getAllTransporters();
         return transporters;
     }

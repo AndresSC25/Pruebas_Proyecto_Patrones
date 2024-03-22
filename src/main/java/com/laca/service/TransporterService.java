@@ -11,9 +11,6 @@ import java.util.List;
 
 @Service
 public class TransporterService {
-
-    //Todo: Se crea la instancia de la conexión a base de datos con la creacion de getInstance para tener una unica
-    // instanncia de la clase
     DataBaseConnection dataBaseConnection = DataBaseConnection.getInstance();
 
     public TransporterService() throws SQLException {
@@ -23,7 +20,7 @@ public class TransporterService {
     @Transactional
     public List<Transporter> getAllTransporters() {
         List<Transporter> transporters = new ArrayList<>();
-        try (Connection connection = dataBaseConnection.getConnection()) {
+        try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
             String query = "SELECT * FROM transporters";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -42,7 +39,7 @@ public class TransporterService {
 
     @Transactional
     public Transporter saveTransporter(Transporter transporter) {
-        try (Connection connection = dataBaseConnection.getConnection()) {
+        try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
             String query = "INSERT INTO transporters (name, company) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, transporter.getName());
@@ -62,7 +59,7 @@ public class TransporterService {
 
     @Transactional
     public Transporter updateTransporter(Long transporterId, Transporter updatedTransporter) {
-        try (Connection connection = dataBaseConnection.getConnection()) {
+        try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
             String storedProcedureCall = "{call update_transporter(?, ?, ?)}";
             CallableStatement statement = connection.prepareCall(storedProcedureCall);
 
@@ -99,7 +96,7 @@ public class TransporterService {
 
     @Transactional
     public Transporter getTransporterById(Long transporterId) {
-        try (Connection connection = dataBaseConnection.getConnection()) {
+        try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
             String query = "SELECT id, name, company FROM transporters WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, transporterId);
@@ -123,7 +120,7 @@ public class TransporterService {
 
     @Transactional
     public Boolean deleteTransporter(Long transporterId) {
-        try (Connection connection = dataBaseConnection.getConnection()) {
+        try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
             String query = "DELETE FROM transporters where transporters.id  = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, transporterId);
