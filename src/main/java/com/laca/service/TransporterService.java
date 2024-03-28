@@ -1,6 +1,10 @@
 package com.laca.service;
 
 import com.laca.entity.Transporter;
+import com.laca.factory_method.abstractProduct.Transport;
+import com.laca.factory_method.concreteProduct.APieLogistics;
+import com.laca.factory_method.contreteCreator.APie;
+import com.laca.factory_method.abstractCreator.LogisticsCompany;
 import com.laca.singleton.DataBaseConnection;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -15,43 +19,50 @@ public class TransporterService {
 
     }
     @Transactional
-    public List<Transporter> getAllTransporters() {
-        List<Transporter> transporters = new ArrayList<>();
+    public List<Transport> getAllTransporters() {
+        List<Transport> transportUnity = new ArrayList<>();
         try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
-            String query = "SELECT * FROM transporters";
+            String query = "SELECT * FROM tbl_unidad_transporte";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                Transporter transporter = new Transporter();
-                transporter.setId(resultSet.getLong("id"));
-                transporter.setName(resultSet.getString("name"));
-                transporter.setCompany(resultSet.getString("company"));
-                transporters.add(transporter);
+                LogisticsCompany aPieLogistics = new APieLogistics();
+                Transport apie = aPieLogistics.createTransport();
+                apie.setId_unidad(resultSet.getInt("id_unidad"));
+                apie.setId_usuario(resultSet.getInt("id_usuario"));
+                apie.setTipo_unidad(resultSet.getString("tipo_unidad"));
+                apie.setCapacidad(resultSet.getInt("capacidad"));
+                apie.setPrecio(resultSet.getDouble("precio"));
+                apie.setEstado(resultSet.getString("estado"));
+                transportUnity.add(apie);
             }
         } catch (SQLException e) {
             // Manejo de excepciones
         }
-        return transporters;
+        return transportUnity;
     }
 
     @Transactional
-    public Transporter saveTransporter(Transporter transporter) {
+    public APie saveTransporter(APie aPie) {
         try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
-            String query = "INSERT INTO transporters (name, company) VALUES (?, ?)";
+            String query = "INSERT INTO tbl_unidad_transporte (id_usuario,tipo_unidad,capacidad,precio,estado) VALUES (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            statement.setString(1, transporter.getName());
-            statement.setString(2, transporter.getCompany());
+            statement.setLong(1, aPie.getId_usuario());
+            statement.setString(2, aPie.getTipo_unidad());
+            statement.setInt(3, aPie.getCapacidad());
+            statement.setDouble(4, aPie.getPrecio());
+            statement.setString(5, aPie.getEstado());
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 1) {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    transporter.setId(generatedKeys.getLong(1));
+                    aPie.setId_unidad(generatedKeys.getLong(1));
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error saving new transporter");
+            throw new RuntimeException("Error saving new transporter unity");
         }
-        return transporter;
+        return aPie;
     }
 
     @Transactional
@@ -90,7 +101,6 @@ public class TransporterService {
             throw new RuntimeException("Error updating transporter: " + e.getMessage(), e);
         }
     }
-
     @Transactional
     public Transporter getTransporterById(Long transporterId) {
         try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
@@ -113,8 +123,6 @@ public class TransporterService {
             throw new RuntimeException("Error retrieving transporter: " + e.getMessage(), e);
         }
     }
-
-
     @Transactional
     public Boolean deleteTransporter(Long transporterId) {
         try (Connection connection = DataBaseConnection.getInstance().getConnection()) {
